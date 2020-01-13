@@ -21,48 +21,47 @@
 //  line(mouseX,mouseY,pmouseX,pmouseY);
 // }
 //
-
-var capture;
+let mic, capture;
 
 function setup() {
-  // video
-createCanvas(windowWidth,windowHeight);
+  createCanvas(windowWidth, windowHeight);
   capture = createCapture(VIDEO);
-  capture.size(640,480);
+  capture.size(640, 480);
   capture.hide();
-
   imageMode(CENTER);
+  rectMode(CENTER);
 
+  // Create an Audio input
+  mic = new p5.AudioIn();
+
+  // start the Audio Input.
+  // By default, it does not .connect() (to the computer speakers)
+  mic.start();
+}
 
 function draw() {
   background(200,244,124);
 
-
-  image(capture, 0, 0, 640, 480);
-
-
-    if (keyPressed(LEFT_ARROW)) {
-      filter(THRESHOLD);
-    }
-
-    if (keyPressed(RIGHT_ARROW)) {
-      filter(OPAQUE);
-    }
-
-    if (keyPressed(UP_ARROW)) {
-      filter(INVERT);
-    }
-
-    if (keyPressed(DOWN_ARROW)) {
-      filter(POSTERIZE);
-    }
+  // Get the overall volume (between 0 and 1.0)
+  let vol = mic.getLevel();
 
 
-  }
+  image(capture, random(vol*2000)+width/2,random(vol*2000)+height/2, width, height);
 
+  if (keyIsDown(LEFT_ARROW)) {
+      filter(INVERT);
+    }
 
+    if (keyIsDown(RIGHT_ARROW)) {
+      filter(BLUR);
+    }
 
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-  }
+    if (keyIsDown(UP_ARROW)) {
+      filter(THRESHOLD);
+    }
+
+    if (keyIsDown(DOWN_ARROW)) {
+      filter(GRAY);
+    }
+
 }
